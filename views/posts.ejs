@@ -1,0 +1,24 @@
+<% include layout %>
+<main>
+  <h2>Posts</h2>
+  <div class="post-container">
+    <% posts.forEach(post => { %>
+    <div class="post">
+      <h3><%= post.title %></h3>
+      <p><%= post.content %></p>
+      <img src="<%= post.imageUrl %>" alt="Post Image" class="post-image" />
+      <div class="post-actions">
+        <button class="like-button">Like (<%= post.likes.length %>)</button>
+        <button class="comment-button">Comment (<%= post.comments.length %>)</button>
+      </div>
+      <div class="comments">
+        <% post.comments.forEach(comment => { %>
+        <div class="comment">
+          <p><strong><%= comment.user %>:</strong> <%= comment.text %></p>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+</main>
