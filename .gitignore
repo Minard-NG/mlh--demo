@@ -1,0 +1,41 @@
+# Node.js dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Binaries
+*.exe
+*.dll
+*.so
+
+# Extension file
+.prettierrc
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+
+
+# Coverage directory
+coverage/
+
+# Build output
+dist/
+build/
+
+# Docker-specific files
+docker-compose.override.yml
+
+# NPM package files
+*.tgz
+
+
