@@ -1,4 +1,4 @@
-/* Reset some default browser styles */
+Reset some default browser styles
 * {
   margin: 0;
   padding: 0;
@@ -100,17 +100,11 @@ form label {
 
 form input[type='text'],
 form input[type='email'],
-form input[type='password'],
-form select,
-form textarea {
+form input[type='password'] {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-}
-
-form select {
-  height: 3rem;
 }
 
 form button {
@@ -206,12 +200,4 @@ footer {
   padding: 0.5rem;
   border-radius: 5px;
   margin-bottom: 0.5rem;
-}
-
-.reply {
-  background: #e9ecef;
-  padding: 0.5rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-left: 1rem;
 }

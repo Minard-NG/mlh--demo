@@ -16,7 +16,7 @@ const getSignup = async (req, res) => {
       body: signupContent,
     });
 
-    res.send(layoutContent);
+    res.status(200).send(layoutContent);
   } catch (err) {
     console.log('Error rendering view', err);
     res.status(500).send('Internal Server Error');
@@ -40,11 +40,11 @@ const signup = async (req, res) => {
     await user.save();
 
     req.flash('success_msg', 'You have successfully signed up');
-    return res.redirect('/auth/login?success=true');
+    return res.status(201).redirect('/auth/login');
   } catch (err) {
     console.error(err);
     req.flash('error_msg', 'An error occurred during sign up');
-    return res.redirect('/auth/signup?error=true'); // Pass a query parameter to indicate error
+    return res.status(500).redirect('/auth/signup'); // Pass a query parameter to indicate error
   }
 };
 
@@ -60,7 +60,7 @@ const getLogin = async (req, res) => {
       body: loginContent,
     });
 
-    res.send(layoutContent);
+    res.status(200).send(layoutContent);
   } catch (err) {
     console.log('Error in rendering:', err);
     req.flash('error_msg', 'An error occurred during login');
@@ -87,7 +87,7 @@ const logout = (req, res) => {
       return next(err);
     }
   });
-  res.redirect('/');
+  res.status(204).redirect('/');
 };
 
 module.exports = {

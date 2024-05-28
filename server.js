@@ -50,9 +50,11 @@ app.use((req, res, next) => {
 // Setup routes
 const homeRoute = require('./routes/index');
 const authRoute = require('./routes/auth');
+const postRoute = require('./routes/post');
 
 app.use(homeRoute);
 app.use('/auth', authRoute);
+app.use('/posts', postRoute);
 
 // default error handling middleware
 app.use((error, req, res, next) => {
