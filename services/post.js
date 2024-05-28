@@ -3,8 +3,8 @@ const Comment = require('../models/Comment');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
 
-const createPost = async (userId, content, image, visibility) => {
-  const post = new Post({ author: userId, content, image, visibility });
+const createPost = async (userId, content, image, imageMimeType, visibility) => {
+  const post = new Post({ author: userId, content, image, imageMimeType, visibility });
   await post.save();
   return post;
 };

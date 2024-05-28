@@ -1,4 +1,6 @@
 const ejs = require('ejs');
+const fs = require('fs');
+const path = require('path');
 const User = require('../models/User');
 const postService = require('../services/post');
 
@@ -7,7 +9,8 @@ const renderFile = ejs.renderFile;
 const getPost = async (req, res) => {
   try {
     const posts = await postService.getPosts(req.user._id);
-    const users = await User.find({});
+    const users = await User.find({ _id: { $ne: req.user._id } });
+    // const users = await User.find({});
 
     const postContent = await renderFile('views/posts.ejs', { posts, users });
 
@@ -18,6 +21,42 @@ const getPost = async (req, res) => {
   }
 };
 
+const createPost = async (req, res) => {
+  try {
+    const { content, visibility } = req.body;
+    const image = req.file ? req.file.path : null;
+
+    let imageData;
+    if (image) {
+      const imagePath = path.join(__dirname, '..', image);
+      imageData = fs.readFileSync(imagePath, { encoding: 'base64' });
+      imageMimeType = `image/${path.extname(imagePath).slice(1)}`;
+    }
+
+    let visibilityMap;
+    if (visibility) {
+      if (Array.isArray(visibility)) {
+        visibilityMap = new Map(visibility.map((id) => [id, true]));
+      } else {
+        visibilityMap = new Map([[visibility, true]]);
+      }
+    } else {
+      visibilityMap = new Map();
+    }
+
+    console.log('Content:', content);
+    console.log('Visibility:', visibility);
+
+    const post = await postService.createPost(req.user._id, content, imageData, imageMimeType, visibilityMap);
+
+    res.status(201).send('Post created!');
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Internal Server Error!');
+  }
+};
+
 module.exports = {
   getPost,
+  createPost,
 };

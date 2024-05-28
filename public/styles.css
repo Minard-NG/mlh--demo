@@ -162,6 +162,7 @@ footer {
 .post-container {
   display: flex;
   flex-direction: column;
+  width: 65%;
   gap: 1.5rem;
 }
 
@@ -214,4 +215,7 @@ footer {
   border-radius: 5px;
   margin-top: 0.5rem;
   margin-left: 1rem;
+}
+#margin_t {
+  margin-top: 1rem;
 }
