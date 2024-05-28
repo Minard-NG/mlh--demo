@@ -6,7 +6,7 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const path = require('path');
 const { createServer } = require('node:http');
-const { Server } = require('socket.io');
+const { initSocketIO, attachSocketIO } = require('./config/socketController');
 const config = require('./config/default');
 
 const app = express();
@@ -47,6 +47,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Connect to MongoDB
+mongoose.connect(MONGO_URI);
+
+const server = createServer(app);
+initSocketIO(server);
+app.use(attachSocketIO);
+
 // Setup routes
 const homeRoute = require('./routes/index');
 const authRoute = require('./routes/auth');
@@ -60,20 +67,6 @@ app.use('/posts', postRoute);
 app.use((error, req, res, next) => {
   console.log(error);
   res.status(500).send('Internal Server Error');
-});
-
-// Connect to MongoDB
-mongoose.connect(MONGO_URI);
-
-const server = createServer(app);
-const io = new Server(server);
-
-io.on('connection', (socket) => {
-  console.log(`A user connected, socket id: ${socket.id}`);
-
-  socket.on('disconnect', () => {
-    console.log(`User disconnected! socket id: ${socket.id}`);
-  });
 });
 
 mongoose.connection.once('open', () => {

@@ -2,10 +2,25 @@ const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const { emitNewPost } = require('../config/socketController');
 
-const createPost = async (userId, content, image, imageMimeType, visibility) => {
-  const post = new Post({ author: userId, content, image, imageMimeType, visibility });
+const createPost = async (userId, content, image, imageMimeType, visibility, io) => {
+  let post = new Post({ author: userId, content, image, imageMimeType, visibility });
   await post.save();
+
+  post = await Post.findById(post._id)
+    .populate('author')
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'userId replies',
+        populate: { path: 'userId' },
+      },
+    })
+    .exec();
+
+  emitNewPost(post, io);
+
   return post;
 };
 

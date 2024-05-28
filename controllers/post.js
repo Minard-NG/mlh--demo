@@ -2,6 +2,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 const User = require('../models/User');
+const Post = require('../models/Post');
 const postService = require('../services/post');
 
 const renderFile = ejs.renderFile;
@@ -12,7 +13,7 @@ const getPost = async (req, res) => {
     const users = await User.find({ _id: { $ne: req.user._id } });
     // const users = await User.find({});
 
-    const postContent = await renderFile('views/posts.ejs', { posts, users });
+    const postContent = await renderFile('views/posts.ejs', { posts, users, user: req.user });
 
     res.status(200).send(postContent);
   } catch (error) {
@@ -25,6 +26,7 @@ const createPost = async (req, res) => {
   try {
     const { content, visibility } = req.body;
     const image = req.file ? req.file.path : null;
+    let imageMimeType = null;
 
     let imageData;
     if (image) {
@@ -47,12 +49,14 @@ const createPost = async (req, res) => {
     console.log('Content:', content);
     console.log('Visibility:', visibility);
 
-    const post = await postService.createPost(req.user._id, content, imageData, imageMimeType, visibilityMap);
+    const post = await postService.createPost(req.user._id, content, imageData, imageMimeType, visibilityMap, req.io);
 
-    res.status(201).send('Post created!');
+    console.log('post value: ', post);
+
+    res.status(201).json({ success: true, post });
   } catch (error) {
     console.log(error);
-    res.status(500).send('Internal Server Error!');
+    res.status(500).json({ error: 'Internal Server Error!' });
   }
 };
 

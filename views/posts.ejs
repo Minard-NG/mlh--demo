@@ -11,7 +11,7 @@
 
     <main>
       <h2>Create a Post</h2>
-      <form action="/posts/create" method="post" enctype="multipart/form-data">
+      <form id="post-form" action="/posts/create" method="post" enctype="multipart/form-data">
         <textarea name="content" placeholder="What's on your mind?" required></textarea>
         <input type="file" name="image" accept="image/*" />
         <div>
@@ -66,5 +66,8 @@
     </main>
 
     <%- include('partials/footer') %>
+    <script src="/socket.io/socket.io.js" type="text/javascript"></script>
+    <script src="/js/script.js" type="text/javascript"></script>
+   
   </body>
 </html>
