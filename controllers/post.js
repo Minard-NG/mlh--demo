@@ -46,12 +46,12 @@ const createPost = async (req, res) => {
       visibilityMap = new Map();
     }
 
-    console.log('Content:', content);
-    console.log('Visibility:', visibility);
+    // console.log('Content:', content);
+    // console.log('Visibility:', visibility);
 
     const post = await postService.createPost(req.user._id, content, imageData, imageMimeType, visibilityMap, req.io);
 
-    console.log('post value: ', post);
+    // console.log('post value: ', post);
 
     res.status(201).json({ success: true, post });
   } catch (error) {
@@ -60,7 +60,19 @@ const createPost = async (req, res) => {
   }
 };
 
+const likePost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.user._id;
+    const post = await postService.likePost(postId, userId);
+    res.status(200).json({ success: true, post });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to like post' });
+  }
+};
+
 module.exports = {
   getPost,
   createPost,
+  likePost,
 };

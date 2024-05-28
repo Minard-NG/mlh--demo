@@ -24,11 +24,18 @@ function attachSocketIO(req, res, next) {
 function emitNewPost(post, io) {
   if (io) {
     io.emit('newPost', post);
-
-    console.log('from the socket server', post);
   } else {
     console.log('io is undefined');
   }
 }
 
-module.exports = { initSocketIO, attachSocketIO, emitNewPost };
+function emitPostLiked(postId, likes) {
+  if (io) {
+    const data = { postId, likes };
+    io.emit('postLiked', data);
+  } else {
+    console.log('io is undefined');
+  }
+}
+
+module.exports = { initSocketIO, attachSocketIO, emitNewPost, emitPostLiked };

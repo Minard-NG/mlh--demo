@@ -2,7 +2,7 @@ const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
-const { emitNewPost } = require('../config/socketController');
+const { emitNewPost, emitPostLiked } = require('../config/socketController');
 
 const createPost = async (userId, content, image, imageMimeType, visibility, io) => {
   let post = new Post({ author: userId, content, image, imageMimeType, visibility });
@@ -88,6 +88,9 @@ const likePost = async (postId, userId) => {
 
     await notification.save();
   }
+
+  // Emit the update to all clients
+  emitPostLiked(postId, post.likes);
 
   return post;
 };
