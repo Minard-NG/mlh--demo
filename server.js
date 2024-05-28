@@ -19,10 +19,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: true,
   })
 );
+
+// Flash messages
+app.use(flash());
 
 // Passport Setup
 require('./config/passport')(passport);
@@ -36,9 +39,6 @@ app.set('views', path.join(__dirname, 'views'));
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Flash messages
-app.use(flash());
-
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
@@ -49,8 +49,16 @@ app.use((req, res, next) => {
 
 // Setup routes
 const homeRoute = require('./routes/index');
+const authRoute = require('./routes/auth');
 
 app.use(homeRoute);
+app.use('/auth', authRoute);
+
+// default error handling middleware
+app.use((error, req, res, next) => {
+  console.log(error);
+  res.status(500).send('Internal Server Error');
+});
 
 // Connect to MongoDB
 mongoose.connect(MONGO_URI);
