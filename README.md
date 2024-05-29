@@ -51,6 +51,8 @@ Socialikool is a social media platform designed to allow users to connect, share
 - `routes/`: Contains route handlers for different parts of the application.
 - `views/`: Contains EJS templates for rendering the frontend.
 - `public/`: Contains static files such as CSS, images, and JavaScript.
+- `controllers/`: Forwards requests to the services and handle responses
+- `services/`: handles the business logic of the application
 
 ### Common Commands
 
