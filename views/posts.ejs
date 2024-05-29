@@ -44,13 +44,13 @@
               <p><strong><%= comment.userId.username %>:</strong> <%= comment.content %></p>
               <div class="replies" id="replies-<%= comment._id %>">
                 <% comment.replies.forEach(reply => { %>
-                <div class="reply">
+                <div class="reply" id="reply-<%= reply._id %>">
                   <p><strong><%= reply.userId.username %>:</strong> <%= reply.content %></p>
                 </div>
                 <% }) %>
                 <form action="/posts/comment/<%= comment._id %>/reply" method="post">
                   <input type="text" name="content" placeholder="Reply" required />
-                  <button class="margin_t" type="submit">Reply</button>
+                  <button type="submit">Reply</button>
                 </form>
               </div>
             </div>

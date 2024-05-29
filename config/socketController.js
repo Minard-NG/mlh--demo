@@ -47,4 +47,13 @@ function emitNewComment(postId, comment) {
   }
 }
 
-module.exports = { initSocketIO, attachSocketIO, emitNewPost, emitPostLiked, emitNewComment };
+function emitNewReply(commentId, postId, reply) {
+  if (io) {
+    const data = { commentId, postId, reply };
+    io.emit('newReply', data);
+  } else {
+    console.log('io is undefined');
+  }
+}
+
+module.exports = { initSocketIO, attachSocketIO, emitNewPost, emitPostLiked, emitNewComment, emitNewReply };

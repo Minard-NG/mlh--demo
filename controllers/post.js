@@ -92,9 +92,28 @@ const addComment = async (req, res) => {
   }
 };
 
+const addReply = async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const userId = req.user._id;
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: 'Content is required' });
+    }
+
+    const reply = await postService.addReply(commentId, userId, content);
+    res.status(201).json({ success: true, reply });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: 'Failed to add reply' });
+  }
+};
+
 module.exports = {
   getPost,
   createPost,
   likePost,
   addComment,
+  addReply,
 };

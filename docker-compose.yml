@@ -1,28 +1,30 @@
-version: '3.8'
-
+version: '3.9'
 services:
-  mongo:
-    image: mongo
-    container_name: mongo
+  socialikool:
+    container_name: socialikool
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-
-  backend:
-    build: .
-    container_name: backend
+      - '3000:3000'
     environment:
       - PORT=3000
-      - MONGO_URI=mongodb://mongo:27017/socialikool
-      - SECRET=topsecret
-    ports:
-      - "3000:3000"
+      - MONGO_URI_DEV=mongodb://mongodb:27017/socialikool-dev
+      - MONGO_URI_TEST=mongodb://mongodb:27017/socialikool-test
+      - SESSION_SECRET=topsecret@456
+      - JWT_SECRET=amazing@123
+      - NODE_ENV=development
     depends_on:
-      - mongo
+      - mongodb
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo
     volumes:
-      - .:/app
-    command: npm start
+      - mongo-data:/data/db
+    ports:
+      - '27017:27017'
+    restart: unless-stopped
 
 volumes:
   mongo-data:

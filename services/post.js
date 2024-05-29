@@ -2,7 +2,7 @@ const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
-const { emitNewPost, emitPostLiked, emitNewComment } = require('../config/socketController');
+const { emitNewPost, emitPostLiked, emitNewComment, emitNewReply } = require('../config/socketController');
 
 const createPost = async (userId, content, image, imageMimeType, visibility, io) => {
   let post = new Post({ author: userId, content, image, imageMimeType, visibility });
@@ -86,14 +86,23 @@ const addComment = async (postId, userId, content) => {
 };
 
 const addReply = async (commentId, userId, content) => {
-  const reply = new Comment({ userId, content });
+  // Find the parent comment to retrieve the postId
+  const parentComment = await Comment.findById(commentId);
+
+  // Create a new reply with the postId from the parent comment
+  const reply = new Comment({ userId, content, postId: parentComment.postId });
   await reply.save();
 
-  const comment = await Comment.findById(commentId);
-  comment.replies.push(reply);
-  await comment.save();
+  parentComment.replies.push(reply);
+  await parentComment.save();
 
-  return reply;
+  const populatedReply = await Comment.findById(reply._id).populate('userId', 'username email');
+
+  // Emit the new reply event
+  const post = await Post.findOne({ comments: commentId });
+  emitNewReply(commentId, post._id, populatedReply);
+
+  return populatedReply;
 };
 
 const likePost = async (postId, userId) => {
