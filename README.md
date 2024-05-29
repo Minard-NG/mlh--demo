@@ -29,12 +29,12 @@ Socialikool is a social media platform designed to allow users to connect, share
 ### Installation Instructions
 
 1. Clone the repository:
-   git clone https://github.com/Minard-NG/socialikool.git
+   - git clone https://github.com/Minard-NG/socialikool.git
 
-   extract and cd into the folder, "socialikool"
+   - extract and cd into the folder, "socialikool"
 
 2. Build and run the application using Docker Compose:
-   docker-compose up --build
+   - docker-compose up --build
 
 3. Running using node, first install the dependencies using:
    npm install
