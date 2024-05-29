@@ -65,9 +65,30 @@ const likePost = async (req, res) => {
     const { postId } = req.params;
     const userId = req.user._id;
     const post = await postService.likePost(postId, userId);
-    res.status(200).json({ success: true, post });
+    res.status(201).json({ success: true, post });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Failed to like post' });
+  }
+};
+
+const addComment = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.user._id;
+    const { content } = req.body;
+
+    console.log('View the request body on the server', req.body);
+
+    if (!content) {
+      return res.status(400).json({ error: 'Content is required' });
+    }
+
+    const comment = await postService.addComment(postId, userId, content);
+    res.status(201).json({ success: true, comment });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to add comment' });
   }
 };
 
@@ -75,4 +96,5 @@ module.exports = {
   getPost,
   createPost,
   likePost,
+  addComment,
 };

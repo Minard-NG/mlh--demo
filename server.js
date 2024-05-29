@@ -62,6 +62,10 @@ const postRoute = require('./routes/post');
 app.use(homeRoute);
 app.use('/auth', authRoute);
 app.use('/posts', postRoute);
+app.post('/test', (req, res) => {
+  console.log('Test request body:', req.body);
+  res.status(200).json({ success: true, data: req.body });
+});
 
 // default error handling middleware
 app.use((error, req, res, next) => {

@@ -38,4 +38,13 @@ function emitPostLiked(postId, likes) {
   }
 }
 
-module.exports = { initSocketIO, attachSocketIO, emitNewPost, emitPostLiked };
+function emitNewComment(postId, comment) {
+  if (io) {
+    const data = { postId, comment };
+    io.emit('newComment', data);
+  } else {
+    console.log('io is undefined');
+  }
+}
+
+module.exports = { initSocketIO, attachSocketIO, emitNewPost, emitPostLiked, emitNewComment };

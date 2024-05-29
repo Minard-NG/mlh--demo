@@ -38,11 +38,11 @@
             <button class="like-button" data-post-id="<%= post._id %>">Like (<%= post.likes %>)</button>
             <button class="comment-button" data-post-id="<%= post._id %>">Comment (<%= post.comments.length %>)</button>
           </div>
-          <div class="comments">
+          <div class="comments" id="comments-<%= post._id %>">
             <% post.comments.forEach(comment => { %>
-            <div class="comment">
+            <div class="comment" id="comment-<%= comment._id %>">
               <p><strong><%= comment.userId.username %>:</strong> <%= comment.content %></p>
-              <div class="replies">
+              <div class="replies" id="replies-<%= comment._id %>">
                 <% comment.replies.forEach(reply => { %>
                 <div class="reply">
                   <p><strong><%= reply.userId.username %>:</strong> <%= reply.content %></p>
@@ -50,14 +50,14 @@
                 <% }) %>
                 <form action="/posts/comment/<%= comment._id %>/reply" method="post">
                   <input type="text" name="content" placeholder="Reply" required />
-                  <button type="submit">Reply</button>
+                  <button class="margin_t" type="submit">Reply</button>
                 </form>
               </div>
             </div>
             <% }) %>
             <form action="/posts/<%= post._id %>/comment" method="post">
               <input type="text" name="content" placeholder="Add a comment" required />
-              <button id="margin_t" type="submit">Comment</button>
+              <button type="submit">Comment</button>
             </form>
           </div>
         </div>
@@ -66,8 +66,8 @@
     </main>
 
     <%- include('partials/footer') %>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js" type="text/javascript"></script>
     <script src="/js/script.js" type="text/javascript"></script>
-   
   </body>
 </html>

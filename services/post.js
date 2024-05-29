@@ -2,7 +2,7 @@ const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
-const { emitNewPost, emitPostLiked } = require('../config/socketController');
+const { emitNewPost, emitPostLiked, emitNewComment } = require('../config/socketController');
 
 const createPost = async (userId, content, image, imageMimeType, visibility, io) => {
   let post = new Post({ author: userId, content, image, imageMimeType, visibility });
@@ -31,7 +31,13 @@ const getPosts = async (userId) => {
     .populate({
       path: 'comments',
       populate: {
-        path: 'userId replies',
+        path: 'userId',
+      },
+    })
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'replies',
         populate: { path: 'userId' },
       },
     })
@@ -44,23 +50,39 @@ const getPosts = async (userId) => {
 };
 
 const addComment = async (postId, userId, content) => {
-  const comment = new Comment({ postId, userId, content });
-  await comment.save();
+  try {
+    let comment = new Comment({ postId, userId, content });
+    await comment.save();
 
-  const post = await Post.findById(postId);
-  post.comments.push(comment);
-  await post.save();
+    const post = await Post.findById(postId);
+    if (!post) {
+      throw new Error('Post not found');
+    }
+    post.comments.push(comment);
+    await post.save();
 
-  const postAuthor = await User.findById(post.author);
-  if (postAuthor._id.toString() != userId) {
-    const notification = new Notification({
-      user: postAuthor._id,
-      message: `User ${userId} commented on your post.`,
-    });
-    await notification.save();
+    comment = await Comment.findById(comment._id)
+      .populate('userId', 'username email')
+      .populate({
+        path: 'replies',
+        populate: { path: 'userId', select: 'username email' },
+      });
+
+    const postAuthor = await User.findById(post.author);
+    if (postAuthor && postAuthor._id.toString() !== userId) {
+      const notification = new Notification({
+        user: postAuthor._id,
+        message: `User ${userId} commented on your post.`,
+      });
+      await notification.save();
+    }
+
+    emitNewComment(postId, comment);
+
+    return comment;
+  } catch (error) {
+    throw new Error('Error adding comment: ' + error.message);
   }
-
-  return comment;
 };
 
 const addReply = async (commentId, userId, content) => {
